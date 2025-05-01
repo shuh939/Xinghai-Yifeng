@@ -1,0 +1,3 @@
+想要本地无线玩，需要ollama配置deepseek-8b
+如果是有网，可以直接使用Cherry Studio链接deepseek接口
+提示词如下：
