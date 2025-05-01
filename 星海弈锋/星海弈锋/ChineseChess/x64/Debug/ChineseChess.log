@@ -1,0 +1,20 @@
+﻿  main.cpp
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(45,2): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(48,2): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(52,3): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(59,2): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(119,2): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(123,3): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(130,2): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(146,15): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(163,15): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(176,17): warning C4996: 'sscanf': This function or variable may be unsafe. Consider using sscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(237,3): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(246,4): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(258,4): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(263,4): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(269,4): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(274,5): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(294,4): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\main.cpp(299,5): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  ChineseChess.vcxproj -> D:\shuhang\我的成就\兵棋推演\兵棋\兵棋\x64\Debug\ChineseChess.exe
