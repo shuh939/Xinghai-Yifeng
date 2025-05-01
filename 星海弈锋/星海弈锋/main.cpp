@@ -4,18 +4,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#pragma comment(lib, "Winmm.lib")  // Á´½ÓWindows¶àÃ½Ìå¿â
+#pragma comment(lib, "Winmm.lib")  // é“¾æ¥Windowså¤šåª’ä½“åº“
 
 typedef struct Person {
 	char name[50];
 	char gender[10];
 	char birthdate[20];
 	char password[20];
-	int battleCount;  // ĞÂÔö£º±ÈÈü³¡´Î
+	int battleCount;  // æ–°å¢ï¼šæ¯”èµ›åœºæ¬¡
 	struct Person* next;
 } Person;
 
-// ¼ì²é³öÉúÄêÔÂ¸ñÊ½£¨YYYY-MM-DD£©
+// æ£€æŸ¥å‡ºç”Ÿå¹´æœˆæ ¼å¼ï¼ˆYYYY-MM-DDï¼‰
 int checkBirthdate(const char* date) {
 	if (strlen(date) != 10 || date[4] != '-' || date[7] != '-') return 0;
 	for (int i = 0; i < 10; i++) {
@@ -25,64 +25,7 @@ int checkBirthdate(const char* date) {
 	return 1;
 }
 
-const char* getRank(int count) {
-	if (count < 10) return "³õ½×¡¤ĞĞĞÇ¼Ü¹¹Ê¦";
-	else if (count < 20) return "¶ş½×¡¤ºãĞÇÄÁĞÇÕß";
-	else if (count < 30) return "Èı½×¡¤ĞÇÁ´±àÖ¯Õß";
-	else if (count < 40) return "ËÄ½×¡¤Î¬¶È¹Û²âÕß";
-	else if (count < 50) return "Îå½×¡¤Ææµã¹¤³ÌÊ¦";
-	else if (count < 60) return "Áù½×¡¤ÏÒÓòµ÷ÂÉÕß";
-	else if (count < 75) return "Æß½×¡¤ÓîÖæ´úÂëÊ¦";
-	else if (count < 100) return "°Ë½×¡¤¹éÁãÖ´Õş¹Ù";
-	else return "¾Å½×¡¤³¬ÏÒÖ®Ó°";
-}
-
-// ±íÍ·²åÈë£¨Ìá¸ßĞÂÔöĞ§ÂÊ£©
-Person* addPerson(Person* head) {
-	Person* newPerson = (Person*)malloc(sizeof(Person));
-
-	printf("ÇëÊäÈëÓÃ»§Ãû(×î´ó50×Ö·û):");
-	scanf("%49s", newPerson->name);
-
-	printf("ÇëÊäÈëĞÔ±ğ(×î´ó10×Ö·û):");
-	scanf("%9s", newPerson->gender);
-
-	do {
-		printf("ÇëÊäÈëÉúÈÕ(YYYY-MM-DD):");
-		scanf("%19s", newPerson->birthdate);
-		if (!checkBirthdate(newPerson->birthdate)) {
-			printf("¸ñÊ½´íÎó£¡ÇëÑÏ¸ñ°´ÕÕYYYY-MM-DDÊäÈë\n");
-		}
-	} while (!checkBirthdate(newPerson->birthdate));
-
-	printf("ÇëÊäÈëÃÜÂë(×î´ó20×Ö·û):");
-	scanf("%19s", newPerson->password);
-
-	// ĞÂÔö³õÊ¼»¯´úÂë ============================
-	newPerson->battleCount = 0;  // ³õÊ¼»¯±ÈÈü³¡´ÎÎª0
-	// ==========================================
-
-	newPerson->next = head;  // ±íÍ·²åÈë
-	printf("ÈËÔ±ĞÅÏ¢Ìí¼Ó³É¹¦£¨±íÍ·²åÈë£©! \n");
-	return newPerson;  // ·µ»ØĞÂÍ·½Úµã
-}
-
-void displayPersons(Person* head) {
-	if (head == NULL) {
-		printf("µ±Ç°Ã»ÓĞÈËÔ±ĞÅÏ¢! \n");
-		return;
-	}
-	Person* temp = head;
-	printf("\n====ÈËÔ±ĞÅÏ¢ÁĞ±í===\n");
-	while (temp != NULL) {
-		printf("ÓÃ»§Ãû:%-10s ĞÔ±ğ:%-6s ÉúÈÕ:%s ³¡´Î:%-3d µÈ¼¶:%s\n",
-			temp->name, temp->gender, temp->birthdate,
-			temp->battleCount, getRank(temp->battleCount));
-		temp = temp->next;
-	}
-}
-
-// ¶àÊôĞÔ²éÑ¯
+// å¤šå±æ€§æŸ¥è¯¢
 typedef enum { NAME, GENDER } SearchType;
 
 Person* findByAttribute(Person* head, SearchType type, const char* value) {
@@ -97,39 +40,99 @@ Person* findByAttribute(Person* head, SearchType type, const char* value) {
 	return NULL;
 }
 
+const char* getRank(int count) {
+	if (count < 10) return "åˆé˜¶Â·è¡Œæ˜Ÿæ¶æ„å¸ˆ";
+	else if (count < 20) return "äºŒé˜¶Â·æ’æ˜Ÿç‰§æ˜Ÿè€…";
+	else if (count < 30) return "ä¸‰é˜¶Â·æ˜Ÿé“¾ç¼–ç»‡è€…";
+	else if (count < 40) return "å››é˜¶Â·ç»´åº¦è§‚æµ‹è€…";
+	else if (count < 50) return "äº”é˜¶Â·å¥‡ç‚¹å·¥ç¨‹å¸ˆ";
+	else if (count < 60) return "å…­é˜¶Â·å¼¦åŸŸè°ƒå¾‹è€…";
+	else if (count < 75) return "ä¸ƒé˜¶Â·å®‡å®™ä»£ç å¸ˆ";
+	else if (count < 100) return "å…«é˜¶Â·å½’é›¶æ‰§æ”¿å®˜";
+	else return "ä¹é˜¶Â·è¶…å¼¦ä¹‹å½±";
+}
+
+// è¡¨å¤´æ’å…¥ï¼ˆæé«˜æ–°å¢æ•ˆç‡ï¼‰
+Person* addPerson(Person* head) {
+	Person* newPerson = (Person*)malloc(sizeof(Person));
+	while (1)
+	{
+		printf("è¯·è¾“å…¥ç”¨æˆ·å(æœ€å¤§50å­—ç¬¦):");
+		scanf("%49s", newPerson->name);
+		Person* temp = findByAttribute(head, NAME, newPerson->name);
+		if (temp) { printf("è¯¥ç”¨æˆ·åå·²è¢«æ³¨å†Œ! \n"); continue; }
+		printf("è¯·è¾“å…¥æ€§åˆ«(æœ€å¤§10å­—ç¬¦):");
+		scanf("%9s", newPerson->gender);
+
+		do {
+			printf("è¯·è¾“å…¥ç”Ÿæ—¥(YYYY-MM-DD):");
+			scanf("%19s", newPerson->birthdate);
+			if (!checkBirthdate(newPerson->birthdate)) {
+				printf("æ ¼å¼é”™è¯¯ï¼è¯·ä¸¥æ ¼æŒ‰ç…§YYYY-MM-DDè¾“å…¥\n");
+			}
+		} while (!checkBirthdate(newPerson->birthdate));
+
+		printf("è¯·è¾“å…¥å¯†ç (æœ€å¤§20å­—ç¬¦):");
+		scanf("%19s", newPerson->password);
+
+		// æ–°å¢åˆå§‹åŒ–ä»£ç  ============================
+		newPerson->battleCount = 0;  // åˆå§‹åŒ–æ¯”èµ›åœºæ¬¡ä¸º0
+		// ==========================================
+
+		newPerson->next = head;  // è¡¨å¤´æ’å…¥
+		printf("äººå‘˜ä¿¡æ¯æ·»åŠ æˆåŠŸï¼ˆè¡¨å¤´æ’å…¥ï¼‰! \n");
+		return newPerson;  // è¿”å›æ–°å¤´èŠ‚ç‚¹
+	}
+}
+
+void displayPersons(Person* head) {
+	if (head == NULL) {
+		printf("å½“å‰æ²¡æœ‰äººå‘˜ä¿¡æ¯! \n");
+		return;
+	}
+	Person* temp = head;
+	printf("\n====äººå‘˜ä¿¡æ¯åˆ—è¡¨===\n");
+	while (temp != NULL) {
+		printf("ç”¨æˆ·å:%-10s æ€§åˆ«:%-6s ç”Ÿæ—¥:%s åœºæ¬¡:%-3d ç­‰çº§:%s\n",
+			temp->name, temp->gender, temp->birthdate,
+			temp->battleCount, getRank(temp->battleCount));
+		temp = temp->next;
+	}
+}
+
 Person* deletePerson(Person* head, const char* name) {
 	Person* temp = head, * prev = NULL;
 	while (temp && strcmp(temp->name, name)) {
 		prev = temp;
 		temp = temp->next;
 	}
-	if (!temp) { printf("Î´ÕÒµ½¸ÃÈËÔ±ĞÅÏ¢! \n"); return head; }
+	if (!temp) { printf("æœªæ‰¾åˆ°è¯¥äººå‘˜ä¿¡æ¯! \n"); return head; }
 	if (prev) prev->next = temp->next;
 	else head = temp->next;
 	free(temp);
-	printf("ÈËÔ±ĞÅÏ¢É¾³ı³É¹¦! \n");
+	printf("äººå‘˜ä¿¡æ¯åˆ é™¤æˆåŠŸ! \n");
 	return head;
 }
 
 void modifyPerson(Person* head, const char* name) {
 	Person* temp = findByAttribute(head, NAME, name);
-	if (!temp) { printf("Î´ÕÒµ½¸ÃÈËÔ±ĞÅÏ¢! \n"); return; }
+	if (!temp) { printf("æœªæ‰¾åˆ°è¯¥äººå‘˜ä¿¡æ¯! \n"); return; }
 
-	printf("ÇëÊäÈëĞÂµÄĞÔ±ğ(×î´ó10×Ö·û):");
+	printf("è¯·è¾“å…¥æ–°çš„æ€§åˆ«(æœ€å¤§10å­—ç¬¦):");
 	scanf("%9s", temp->gender);
 
 	do {
-		printf("ÇëÊäÈëĞÂµÄÉúÈÕ(YYYY-MM-DD):");
+		printf("è¯·è¾“å…¥æ–°çš„ç”Ÿæ—¥(YYYY-MM-DD):");
 		scanf("%19s", temp->birthdate);
 		if (!checkBirthdate(temp->birthdate)) {
-			printf("¸ñÊ½´íÎó£¡ÇëÑÏ¸ñ°´ÕÕYYYY-MM-DDÊäÈë\n");
+			printf("æ ¼å¼é”™è¯¯ï¼è¯·ä¸¥æ ¼æŒ‰ç…§YYYY-MM-DDè¾“å…¥\n");
 		}
 	} while (!checkBirthdate(temp->birthdate));
 
-	printf("ÇëÊäÈëĞÂµÄÃÜÂë(×î´ó20×Ö·û):");
+	printf("è¯·è¾“å…¥æ–°çš„å¯†ç (æœ€å¤§20å­—ç¬¦):");
 	scanf("%19s", temp->password);
 
-	printf("ÈËÔ±ĞÅÏ¢ĞŞ¸Ä³É¹¦! \n");
+	printf("äººå‘˜ä¿¡æ¯ä¿®æ”¹æˆåŠŸ! \n");
 }
 
 void freeList(Person* head) {
@@ -141,28 +144,28 @@ void freeList(Person* head) {
 	}
 }
 
-// Êı¾İ³Ö¾Ã»¯ - ±£´æµ½ÎÄ¼ş
+// æ•°æ®æŒä¹…åŒ– - ä¿å­˜åˆ°æ–‡ä»¶
 void saveToFile(Person* head, const char* filename) {
 	FILE* file = fopen(filename, "w");
-	if (!file) { printf("±£´æÊ§°Ü£ºÎŞ·¨´ò¿ªÎÄ¼ş£¡\n"); return; }
+	if (!file) { printf("ä¿å­˜å¤±è´¥ï¼šæ— æ³•æ‰“å¼€æ–‡ä»¶ï¼\n"); return; }
 
 	Person* temp = head;
 	while (temp) {
-		fprintf(file, "%s %s %s %s %d\n",  // Ìí¼Ó %d ±£´æ³¡´Î
+		fprintf(file, "%s %s %s %s %d\n",  // æ·»åŠ  %d ä¿å­˜åœºæ¬¡
 			temp->name, temp->gender,
 			temp->birthdate, temp->password,
 			temp->battleCount);
 		temp = temp->next;
 	}
 	fclose(file);
-	printf("Êı¾İÒÑ³É¹¦±£´æµ½ %s\n", filename);
+	printf("æ•°æ®å·²æˆåŠŸä¿å­˜åˆ° %s\n", filename);
 }
 
-// Êı¾İ³Ö¾Ã»¯ - ´ÓÎÄ¼ş¼ÓÔØ
+// æ•°æ®æŒä¹…åŒ– - ä»æ–‡ä»¶åŠ è½½
 Person* loadFromFile(const char* filename) {
 	FILE* file = fopen(filename, "r");
 	if (!file) {
-		printf("¼ÓÔØÊ§°Ü£ºÎÄ¼ş²»´æÔÚ£¡\n");
+		printf("åŠ è½½å¤±è´¥ï¼šæ–‡ä»¶ä¸å­˜åœ¨ï¼\n");
 		return NULL;
 	}
 
@@ -172,22 +175,22 @@ Person* loadFromFile(const char* filename) {
 	while (fgets(buff, sizeof(buff), file)) {
 		newPerson = (Person*)malloc(sizeof(Person));
 
-		// ĞŞ¸Äµã£ºÌí¼Ó battleCount ×Ö¶Î¶ÁÈ¡
+		// ä¿®æ”¹ç‚¹ï¼šæ·»åŠ  battleCount å­—æ®µè¯»å–
 		int numRead = sscanf(buff, "%49s %9s %19s %19s %d",
 			newPerson->name,
 			newPerson->gender,
 			newPerson->birthdate,
 			newPerson->password,
-			&newPerson->battleCount);  // ĞÂÔö×Ö¶Î
+			&newPerson->battleCount);  // æ–°å¢å­—æ®µ
 
-		// ´¦Àí¾ÉÊı¾İ¸ñÊ½£¨Ã»ÓĞ battleCount µÄÇé¿ö£©
+		// å¤„ç†æ—§æ•°æ®æ ¼å¼ï¼ˆæ²¡æœ‰ battleCount çš„æƒ…å†µï¼‰
 		if (numRead < 5) {
-			newPerson->battleCount = 0;  // Ä¬ÈÏ³õÊ¼»¯Îª0
+			newPerson->battleCount = 0;  // é»˜è®¤åˆå§‹åŒ–ä¸º0
 		}
 
 		newPerson->next = NULL;
 
-		// Á´±í¹¹½¨Âß¼­±£³Ö²»±ä
+		// é“¾è¡¨æ„å»ºé€»è¾‘ä¿æŒä¸å˜
 		if (!head) {
 			head = tail = newPerson;
 		}
@@ -198,42 +201,42 @@ Person* loadFromFile(const char* filename) {
 	}
 
 	fclose(file);
-	printf("Êı¾İ¼ÓÔØ³É¹¦£¡µ±Ç°¼ÇÂ¼Êı£º");
-	displayPersons(head);  // ×¢Òâ£ºdisplayPersons ĞèÒªÒÑÖ§³ÖÏÔÊ¾ battleCount
+	printf("æ•°æ®åŠ è½½æˆåŠŸï¼å½“å‰è®°å½•æ•°ï¼š");
+	displayPersons(head);  // æ³¨æ„ï¼šdisplayPersons éœ€è¦å·²æ”¯æŒæ˜¾ç¤º battleCount
 	return head;
 }
 
-// Ñ­»·²¥·Å±³¾°ÒôÀÖ
+// å¾ªç¯æ’­æ”¾èƒŒæ™¯éŸ³ä¹
 void bgm()
 {
-	// ¸øÒôÀÖÎÄ¼şÉèÖÃ±ğÃû£¬±ÜÃâÖØ¸´´¦ÀíÂ·¾¶
+	// ç»™éŸ³ä¹æ–‡ä»¶è®¾ç½®åˆ«åï¼Œé¿å…é‡å¤å¤„ç†è·¯å¾„
 	mciSendString("open ./Onmyway.mp3 alias bgm", NULL, 0, NULL);
-	// Ñ­»·²¥·ÅÖ¸Áî£¨repeat²ÎÊı£©
+	// å¾ªç¯æ’­æ”¾æŒ‡ä»¤ï¼ˆrepeatå‚æ•°ï¼‰
 	mciSendString("play bgm repeat", NULL, 0, NULL);
 }
 
 int main(int argc, char* argv[])
 {
-	bgm();  // Æô¶¯±³¾°ÒôÀÖ
+	bgm();  // å¯åŠ¨èƒŒæ™¯éŸ³ä¹
 
 	Person* head = NULL;
 	int choice, searchType;
 	char name[50], filename[50] = "data.dat";
 
-	printf("===== ÈËÔ±ĞÅÏ¢¹ÜÀíÏµÍ³ ====\n");
-	printf("Ö§³Ö¹¦ÄÜ£ºÃÜÂëÑéÖ¤¡¢¸ñÊ½Ğ£Ñé¡¢Êı¾İ³Ö¾Ã»¯\n\n");
+	printf("===== äººå‘˜ä¿¡æ¯ç®¡ç†ç³»ç»Ÿ ====\n");
+	printf("æ”¯æŒåŠŸèƒ½ï¼šå¯†ç éªŒè¯ã€æ ¼å¼æ ¡éªŒã€æ•°æ®æŒä¹…åŒ–\n\n");
 
 	while (1) {
-		printf("\n1. Ìí¼ÓÈËÔ±ĞÅÏ¢£¨±íÍ·²åÈë£©\n");
-		printf("2. ÏÔÊ¾ËùÓĞÈËÔ±ĞÅÏ¢\n");
-		printf("3. ĞŞ¸ÄÈËÔ±ĞÅÏ¢£¨°´ÓÃ»§Ãû£©\n");
-		printf("4. É¾³ıÈËÔ±ĞÅÏ¢£¨°´ÓÃ»§Ãû£©\n");
-		printf("5. ¶àÌõ¼ş²éÑ¯£¨ÓÃ»§Ãû/ĞÔ±ğ/ÉúÈÕ/³¡´Î/µÈ¼¶£©\n");
-		printf("6. ½øÈëÓÎÏ·£¨ÓÃ»§µÇÂ¼£©\n");
-		printf("7. ±£´æÊı¾İµ½ÎÄ¼ş\n");
-		printf("8. ´ÓÎÄ¼ş¼ÓÔØÊı¾İ\n");
-		printf("9. ÍË³öÏµÍ³\n");
-		printf("ÇëÊäÈëÑ¡Ïî: ");
+		printf("\n1. æ·»åŠ äººå‘˜ä¿¡æ¯ï¼ˆè¡¨å¤´æ’å…¥ï¼‰\n");
+		printf("2. æ˜¾ç¤ºæ‰€æœ‰äººå‘˜ä¿¡æ¯\n");
+		printf("3. ä¿®æ”¹äººå‘˜ä¿¡æ¯ï¼ˆæŒ‰ç”¨æˆ·åï¼‰\n");
+		printf("4. åˆ é™¤äººå‘˜ä¿¡æ¯ï¼ˆæŒ‰ç”¨æˆ·åï¼‰\n");
+		printf("5. å¤šæ¡ä»¶æŸ¥è¯¢ï¼ˆç”¨æˆ·å/æ€§åˆ«/ç”Ÿæ—¥/åœºæ¬¡/ç­‰çº§ï¼‰\n");
+		printf("6. è¿›å…¥æ¸¸æˆï¼ˆç”¨æˆ·ç™»å½•ï¼‰\n");
+		printf("7. ä¿å­˜æ•°æ®åˆ°æ–‡ä»¶\n");
+		printf("8. ä»æ–‡ä»¶åŠ è½½æ•°æ®\n");
+		printf("9. é€€å‡ºç³»ç»Ÿ\n");
+		printf("è¯·è¾“å…¥é€‰é¡¹: ");
 		scanf("%d", &choice);
 
 		switch (choice) {
@@ -242,80 +245,80 @@ int main(int argc, char* argv[])
 			break;
 		case 2: {
 			char admin_pass[20];
-			printf("ÇëÊäÈë¹ÜÀíÔ±ÃÜÂë: ");
+			printf("è¯·è¾“å…¥ç®¡ç†å‘˜å¯†ç : ");
 			scanf("%19s", admin_pass);
-			// ÕâÀï¿ÉÒÔÉèÖÃÒ»¸öÄ¬ÈÏ¹ÜÀíÔ±ÃÜÂë£¬±ÈÈç"admin123"
+			// è¿™é‡Œå¯ä»¥è®¾ç½®ä¸€ä¸ªé»˜è®¤ç®¡ç†å‘˜å¯†ç ï¼Œæ¯”å¦‚"admin123"
 			if (strcmp(admin_pass, "adminXD") == 0) {
 				displayPersons(head);
 			}
 			else {
-				printf("ÃÜÂë´íÎó£¡\n");
+				printf("å¯†ç é”™è¯¯ï¼\n");
 			}
 			break;
 		}
 		case 3:
-			printf("ÇëÊäÈëÒªĞŞ¸ÄµÄÈËÔ±ÓÃ»§Ãû: ");
+			printf("è¯·è¾“å…¥è¦ä¿®æ”¹çš„äººå‘˜ç”¨æˆ·å: ");
 			scanf("%s", name);
 			modifyPerson(head, name);
 			break;
 		case 4:
-			printf("ÇëÊäÈëÒªÉ¾³ıµÄÈËÔ±ÓÃ»§Ãû: ");
+			printf("è¯·è¾“å…¥è¦åˆ é™¤çš„äººå‘˜ç”¨æˆ·å: ");
 			scanf("%s", name);
 			head = deletePerson(head, name);
 			break;
 		case 5: {
-			printf("ÇëÊäÈëÓÃ»§Ãû: ");
+			printf("è¯·è¾“å…¥ç”¨æˆ·å: ");
 			searchType = 1;
 			scanf("%s", name);
 			Person* found = findByAttribute(head, (SearchType)(searchType - 1), name);
 			if (found) {
 				char input_pass[20];
-				printf("ÇëÊäÈë¸ÃÓÃ»§µÄÃÜÂë: ");
+				printf("è¯·è¾“å…¥è¯¥ç”¨æˆ·çš„å¯†ç : ");
 				scanf("%19s", input_pass);
 				if (strcmp(input_pass, found->password) == 0) {
-					printf("\n²éÑ¯½á¹û£º\n");
-					printf("ÓÃ»§Ãû:%s\nĞÔ±ğ:%s\nÉúÈÕ:%s\n",
+					printf("\næŸ¥è¯¢ç»“æœï¼š\n");
+					printf("ç”¨æˆ·å:%s\næ€§åˆ«:%s\nç”Ÿæ—¥:%s\n",
 						found->name, found->gender, found->birthdate);
-					printf("³¡´Î:%d\nµÈ¼¶:%s\n",
+					printf("åœºæ¬¡:%d\nç­‰çº§:%s\n",
 						found->battleCount, getRank(found->battleCount));
 				}
 				else {
-					printf("ÃÜÂë´íÎó£¬ÎŞÈ¨²é¿´ĞÅÏ¢£¡\n");
+					printf("å¯†ç é”™è¯¯ï¼Œæ— æƒæŸ¥çœ‹ä¿¡æ¯ï¼\n");
 				}
 			}
 			else {
-				printf("Î´ÕÒµ½Æ¥ÅäµÄÈËÔ±ĞÅÏ¢£¡\n");
+				printf("æœªæ‰¾åˆ°åŒ¹é…çš„äººå‘˜ä¿¡æ¯ï¼\n");
 			}
 			break;
 		}
 		case 6: {
-			printf("ÇëÊäÈëÓÃ»§Ãû: ");
+			printf("è¯·è¾“å…¥ç”¨æˆ·å: ");
 			searchType = 1;
 			scanf("%s", name);
 			Person* found = findByAttribute(head, (SearchType)(searchType - 1), name);
 			if (found) {
 				char input_pass[20];
-				printf("ÇëÊäÈë¸ÃÓÃ»§µÄÃÜÂë: ");
+				printf("è¯·è¾“å…¥è¯¥ç”¨æˆ·çš„å¯†ç : ");
 				scanf("%19s", input_pass);
 				if (strcmp(input_pass, found->password) == 0) {
-					printf("µÇÂ¼³É¹¦£¬»¶Ó­ %s ½øÈëÓÎÏ·£¡\n", found->name);
-					found->battleCount++;  // ±ÈÈü³¡´Î¼Ó1
-					// ÕâÀï¿ÉÒÔµ÷ÓÃÓÎÏ·µÄÖ÷º¯Êı
-					// ³õÊ¼»¯Ó¦ÓÃ´°¿Ú£¨960x820£©
+					printf("ç™»å½•æˆåŠŸï¼Œæ¬¢è¿ %s è¿›å…¥æ¸¸æˆï¼\n", found->name);
+					found->battleCount++;  // æ¯”èµ›åœºæ¬¡åŠ 1
+					// è¿™é‡Œå¯ä»¥è°ƒç”¨æ¸¸æˆçš„ä¸»å‡½æ•°
+					// åˆå§‹åŒ–åº”ç”¨çª—å£ï¼ˆ960x820ï¼‰
 					Application a(960, 820);
 
-					// Æô¶¯¿ªÊ¼Ò³Ãæ
+					// å¯åŠ¨å¼€å§‹é¡µé¢
 					a.runScene(new StartScene());
 
-					// ½øÈëÖ÷Ñ­»·
+					// è¿›å…¥ä¸»å¾ªç¯
 					return a.exec();
 				}
 				else {
-					printf("ÃÜÂë´íÎó£¬ÎŞ·¨½øÈëÓÎÏ·£¡\n");
+					printf("å¯†ç é”™è¯¯ï¼Œæ— æ³•è¿›å…¥æ¸¸æˆï¼\n");
 				}
 			}
 			else {
-				printf("Î´ÕÒµ½Æ¥ÅäµÄÈËÔ±ĞÅÏ¢£¡\n");
+				printf("æœªæ‰¾åˆ°åŒ¹é…çš„äººå‘˜ä¿¡æ¯ï¼\n");
 			}
 			break;
 		}
@@ -330,11 +333,11 @@ int main(int argc, char* argv[])
 		}
 		case 9: {
 			freeList(head);
-			printf("ÏµÍ³ÒÑÍË³ö£¬Êı¾İÒÑÊÍ·Å£¡\n");
+			printf("ç³»ç»Ÿå·²é€€å‡ºï¼Œæ•°æ®å·²é‡Šæ”¾ï¼\n");
 			return 0;
 		}
 		default: {
-			printf("ÎŞĞ§µÄÑ¡Ïî£¬ÇëÖØĞÂÊäÈë£¡\n");
+			printf("æ— æ•ˆçš„é€‰é¡¹ï¼Œè¯·é‡æ–°è¾“å…¥ï¼\n");
 		}
 		}
 	}
