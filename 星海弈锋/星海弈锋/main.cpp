@@ -218,7 +218,6 @@ void bgm()
 int main(int argc, char* argv[])
 {
 	bgm();  // 启动背景音乐
-
 	Person* head = NULL;
 	int choice, searchType;
 	char name[50], filename[50] = "data.dat";
