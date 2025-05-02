@@ -1,19 +1,19 @@
 #pragma once
 #include "GameFrameWork/Scene.h"
-#include <Windows.h> // Windows.hÍ·ÎÄ¼şÒÔ¶¨ÒåULONGLONGÀàĞÍ
+#include <Windows.h> // Windows.hå¤´æ–‡ä»¶ä»¥å®šä¹‰ULONGLONGç±»å‹
 
-// ½áËãÒ³Ãæ×¨ÓÃĞÇĞÇ½á¹¹Ìå
+// ç»“ç®—é¡µé¢ä¸“ç”¨æ˜Ÿæ˜Ÿç»“æ„ä½“
 struct ResultStar
 {
-    int x, y;              // Î»ÖÃ
-    int size;              // ´óĞ¡
-    int baseBrightness;    // »ù´¡ÁÁ¶È
-    float twinkleSpeed;    // ÉÁË¸ËÙ¶È
-    float twinklePhase;    // ÉÁË¸ÏàÎ»
-    COLORREF color;        // ĞÇĞÇÑÕÉ«
+    int x, y;              // ä½ç½®
+    int size;              // å¤§å°
+    int baseBrightness;    // åŸºç¡€äº®åº¦
+    float twinkleSpeed;    // é—ªçƒé€Ÿåº¦
+    float twinklePhase;    // é—ªçƒç›¸ä½
+    COLORREF color;        // æ˜Ÿæ˜Ÿé¢œè‰²
 };
 
-// ÉùÃ÷Íâ²¿±äÁ¿£¬ÔÚcppÎÄ¼şÖĞ¶¨Òå
+// å£°æ˜å¤–éƒ¨å˜é‡ï¼Œåœ¨cppæ–‡ä»¶ä¸­å®šä¹‰
 extern const int RESULT_STAR_COUNT;
 extern ResultStar resultStars[];
 extern DWORD resultLastUpdateTime;
@@ -22,20 +22,20 @@ extern float resultAnimationTime;
 class ResultScene : public Scene
 {
 public:
-    // ÓÎÏ·½á¹ûÀàĞÍ
+    // æ¸¸æˆç»“æœç±»å‹
     enum ResultType
     {
-        RedWin,  // ºì·½»ñÊ¤
-        BlackWin // ºÚ·½»ñÊ¤
+        RedWin,  // çº¢æ–¹è·èƒœ
+        BlackWin // é»‘æ–¹è·èƒœ
     };
 
-    // ¹¹Ôìº¯Êı½ÓÊÕÓÎÏ·½á¹ûÀàĞÍ
+    // æ„é€ å‡½æ•°æ¥æ”¶æ¸¸æˆç»“æœç±»å‹
     ResultScene(ResultType resultType);
-    // ²»ĞèÒªÏÔÊ½ÉùÃ÷Îö¹¹º¯Êı£¬Ê¹ÓÃÄ¬ÈÏÎö¹¹º¯Êı
+    // ä¸éœ€è¦æ˜¾å¼å£°æ˜ææ„å‡½æ•°ï¼Œä½¿ç”¨é»˜è®¤ææ„å‡½æ•°
     void draw() override;
     void update() override;
 
 private:
-    ResultType m_resultType; // ±£´æÓÎÏ·½á¹û
-    ULONGLONG m_createTime;  // ¼ÇÂ¼Ò³Ãæ´´½¨Ê±¼ä
+    ResultType m_resultType; // ä¿å­˜æ¸¸æˆç»“æœ
+    ULONGLONG m_createTime;  // è®°å½•é¡µé¢åˆ›å»ºæ—¶é—´
 };
