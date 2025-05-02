@@ -7,301 +7,314 @@
 #include <ctime>
 #include <math.h>
 #include "ResManager.h"
-#include <graphics.h> // Ìí¼ÓÍ¼ĞÎ¿âÍ·ÎÄ¼ş
-#include <string> // Ìí¼Ó×Ö·û´®´¦ÀíÍ·ÎÄ¼ş
-#include "TimingUtils.h" // Ìí¼Ó×Ô¶¨ÒåÊ±¼ä¹¤¾ßÍ·ÎÄ¼ş
-#include "TextUtils.h" // Ìí¼Ó×Ô¶¨ÒåÎÄ±¾¹¤¾ßÍ·ÎÄ¼ş
+#include <graphics.h> // æ·»åŠ å›¾å½¢åº“å¤´æ–‡ä»¶
+#include <string> // æ·»åŠ å­—ç¬¦ä¸²å¤„ç†å¤´æ–‡ä»¶
+#include "TimingUtils.h" // æ·»åŠ è‡ªå®šä¹‰æ—¶é—´å·¥å…·å¤´æ–‡ä»¶
+#include "TextUtils.h" // æ·»åŠ è‡ªå®šä¹‰æ–‡æœ¬å·¥å…·å¤´æ–‡ä»¶
 
-// ĞÇ¿Õ±³¾°Êı¾İ - Ê¹ÓÃÈ«¾Ö±äÁ¿µ«Ìí¼ÓÇ°×º±ÜÃâ³åÍ»
-const int RESULT_STAR_COUNT = 350;  // ĞÇĞÇÊıÁ¿
-ResultStar resultStars[RESULT_STAR_COUNT]; // Ê¹ÓÃResultStarÀàĞÍ
-DWORD resultLastUpdateTime = 0;    // ÉÏ´Î¸üĞÂÊ±¼ä
-float resultAnimationTime = 0;     // ¶¯»­Ê±¼äÀÛ¼Æ
+// æ˜Ÿç©ºèƒŒæ™¯æ•°æ® - ä½¿ç”¨å…¨å±€å˜é‡ä½†æ·»åŠ å‰ç¼€é¿å…å†²çª
+const int RESULT_STAR_COUNT = 350;  // æ˜Ÿæ˜Ÿæ•°é‡
+ResultStar resultStars[RESULT_STAR_COUNT]; // ä½¿ç”¨ResultStarç±»å‹
+DWORD resultLastUpdateTime = 0;    // ä¸Šæ¬¡æ›´æ–°æ—¶é—´
+float resultAnimationTime = 0;     // åŠ¨ç”»æ—¶é—´ç´¯è®¡
 
-// Ê¹ÓÃ×Ô¼ºµÄGetTickCount64¼æÈİº¯Êı¶¨ÒåÒÑÒÆÖÁTimingUtils.h
+// ä½¿ç”¨è‡ªå·±çš„GetTickCount64å…¼å®¹å‡½æ•°å®šä¹‰å·²ç§»è‡³TimingUtils.h
 
 ResultScene::ResultScene(ResultType resultType)
-    : m_resultType(resultType)
+    : m_resultType(resultType), m_bgImg(nullptr)
 {
-    // ¼ÇÂ¼Ò³Ãæ´´½¨Ê±¼ä£¬Ê¹ÓÃ¼æÈİº¯ÊıÌæ´úGetTickCount64
+    // è®°å½•é¡µé¢åˆ›å»ºæ—¶é—´ï¼Œä½¿ç”¨å…¼å®¹å‡½æ•°æ›¿ä»£GetTickCount64
     m_createTime = MyGetTickCount64();
-    
-    // ³õÊ¼»¯Ëæ»úÊıÖÖ×Ó
+
+    // åˆå§‹åŒ–éšæœºæ•°ç§å­
     srand((unsigned int)time(NULL));
 
-    // ³õÊ¼»¯ĞÇĞÇ
+    // å°è¯•åŠ è½½èƒŒæ™¯å›¾ç‰‡
+    m_bgImg = ResManager::instance()->loadImage("Resource/images/resultBackground.png");
+
+    // åˆå§‹åŒ–æ˜Ÿæ˜Ÿ
     for (int i = 0; i < RESULT_STAR_COUNT; i++)
     {
-        // Î»ÖÃÍêÈ«Ëæ»ú
+        // ä½ç½®å®Œå…¨éšæœº
         resultStars[i].x = rand() % sApp->width();
         resultStars[i].y = rand() % sApp->height();
 
-        // ´óĞ¡Ëæ»ú£¬Ê¹Ò»²¿·ÖĞÇĞÇ¸ü´ó
+        // å¤§å°éšæœºï¼Œä½¿ä¸€éƒ¨åˆ†æ˜Ÿæ˜Ÿæ›´å¤§
         resultStars[i].size = (rand() % 100 < 85) ? (rand() % 2) + 1 : (rand() % 2) + 2;
 
-        // ÁÁ¶È»ù´¡Öµ - È·±£ÓĞ×ã¹»µÄÁÁ¶È±ä»¯¿Õ¼ä
+        // äº®åº¦åŸºç¡€å€¼ - ç¡®ä¿æœ‰è¶³å¤Ÿçš„äº®åº¦å˜åŒ–ç©ºé—´
         resultStars[i].baseBrightness = 150 + (rand() % 70);
 
-        // ÉÁË¸ËÙ¶ÈËæ»ú£¨ÖµÔ½Ğ¡ÉÁË¸Ô½Âı£©
+        // é—ªçƒé€Ÿåº¦éšæœºï¼ˆå€¼è¶Šå°é—ªçƒè¶Šæ…¢ï¼‰
         resultStars[i].twinkleSpeed = 0.5f + (rand() % 100) / 30.0f;
 
-        // ÉÁË¸ÏàÎ»Ëæ»ú£¨ÈÃÃ¿¿ÅĞÇĞÇÉÁË¸ÖÜÆÚ²»Í¬£©
-        resultStars[i].twinklePhase = (float)(rand() % 628) / 100.0f; // 0µ½2¦ĞÖ®¼ä
+        // é—ªçƒç›¸ä½éšæœºï¼ˆè®©æ¯é¢—æ˜Ÿæ˜Ÿé—ªçƒå‘¨æœŸä¸åŒï¼‰
+        resultStars[i].twinklePhase = (float)(rand() % 628) / 100.0f; // 0åˆ°2Ï€ä¹‹é—´
 
-        // ĞÇĞÇÑÕÉ«Ëæ»ú - ´ó¶àÊıÊÇ°×É«£¬µ«ÓĞÒ»Ğ©ÊÇµ­À¶É«¡¢µ­ºìÉ«»òµ­»ÆÉ«
+        // æ˜Ÿæ˜Ÿé¢œè‰²éšæœº - å¤§å¤šæ•°æ˜¯ç™½è‰²ï¼Œä½†æœ‰ä¸€äº›æ˜¯æ·¡è“è‰²ã€æ·¡çº¢è‰²æˆ–æ·¡é»„è‰²
         int colorRand = rand() % 100;
-        if (colorRand < 60)
+        if (colorRand < 80)
         {
-            // °×É«ĞÇĞÇ
-            resultStars[i].color = RGB(0, 47, 167);
+            // ç™½è‰²æ˜Ÿæ˜Ÿ
+            resultStars[i].color = RGB(255, 255, 255);
         }
-        else if (colorRand < 75)
+        else if (colorRand < 85)
         {
-            // µ­À¶É«ĞÇĞÇ
-            resultStars[i].color = RGB(252, 272, 10);
+            // æ·¡è“è‰²æ˜Ÿæ˜Ÿ
+            resultStars[i].color = RGB(200, 220, 255);
+        }
+        else if (colorRand < 90)
+        {
+            // æ·¡çº¢è‰²æ˜Ÿæ˜Ÿ
+            resultStars[i].color = RGB(255, 220, 220);
         }
         else if (colorRand < 95)
         {
-            // µ­ºìÉ«ĞÇĞÇ
-            resultStars[i].color = RGB(238, 130, 238);
-        }
-        else if (colorRand < 105)
-        {
-            // µ­»ÆÉ«ĞÇĞÇ
-            resultStars[i].color = RGB(105, 105, 105);
+            // æ·¡é»„è‰²æ˜Ÿæ˜Ÿ
+            resultStars[i].color = RGB(255, 255, 220);
         }
         else
         {
-            // µ­ºìÉ«ĞÇĞÇ
-            resultStars[i].color = RGB(235, 92, 92);
+            // æ·¡ç»¿è‰²æ˜Ÿæ˜Ÿ
+            resultStars[i].color = RGB(220, 255, 220);
         }
     }
 
-    // ³õÊ¼»¯Ê±¼ä
+    // åˆå§‹åŒ–æ—¶é—´
     resultLastUpdateTime = GetTickCount();
 }
 
 void ResultScene::draw()
 {
-    // »ñÈ¡ÆÁÄ»³ß´ç
+    // è·å–å±å¹•å°ºå¯¸
     int width = sApp->width();
     int height = sApp->height();
 
-    // »æÖÆÉîÉ«±³¾° - ¸ü°µµÄÉîÀ¶É«±³¾°£¬´øÓĞÇáÎ¢±ä»¯
-    for (int y = 0; y < height; y += 2) // Ã¿Á½ĞĞ»æÖÆÒ»´Î£¬Ìá¸ßĞÔÄÜ
+    // å¦‚æœèƒŒæ™¯å›¾ç‰‡å­˜åœ¨ï¼Œåˆ™ç»˜åˆ¶å›¾ç‰‡èƒŒæ™¯
+    if (m_bgImg && m_bgImg->getwidth() > 0)
     {
-        float ratio = (float)y / height;
-        // »ù´¡ÑÕÉ«¸ü°µ£¬¸ü½Ó½üºÚÉ«
-        int r = 2 + (int)(5 * ratio);
-        int g = 2 + (int)(5 * ratio);
-        int b = 10 + (int)(20 * ratio);
-
-        // ÔÚ»ù´¡ÑÕÉ«ÉÏÌí¼ÓËæ»úÔëµã£¬Ä£ÄâĞÇ¼Ê³¾°£
-        if (rand() % 100 < 5)
+        // ä½¿ç”¨é¡¹ç›®ä¸­å·²æœ‰çš„drawImageå‡½æ•°ç»˜åˆ¶èƒŒæ™¯å›¾ç‰‡
+        drawImage(0, 0, m_bgImg);
+    }
+    // å¦åˆ™ç»˜åˆ¶ç¨‹åºç”Ÿæˆçš„æ˜Ÿç©ºèƒŒæ™¯å’ŒåŠ¨æ€æ˜Ÿæ˜Ÿ
+    else
+    {
+        // ç»˜åˆ¶æ·±è‰²èƒŒæ™¯ - æ›´æš—çš„æ·±è“è‰²èƒŒæ™¯ï¼Œå¸¦æœ‰è½»å¾®å˜åŒ–
+        for (int y = 0; y < height; y += 2) // æ¯ä¸¤è¡Œç»˜åˆ¶ä¸€æ¬¡ï¼Œæé«˜æ€§èƒ½
         {
-            r += rand() % 3;
-            g += rand() % 3;
-            b += rand() % 5;
+            float ratio = (float)y / height;
+            // åŸºç¡€é¢œè‰²æ›´æš—ï¼Œæ›´æ¥è¿‘é»‘è‰²
+            int r = 2 + (int)(5 * ratio);
+            int g = 2 + (int)(5 * ratio);
+            int b = 10 + (int)(20 * ratio);
+
+            // åœ¨åŸºç¡€é¢œè‰²ä¸Šæ·»åŠ éšæœºå™ªç‚¹ï¼Œæ¨¡æ‹Ÿæ˜Ÿé™…å°˜åŸƒ
+            if (rand() % 100 < 5)
+            {
+                r += rand() % 3;
+                g += rand() % 3;
+                b += rand() % 5;
+            }
+
+            setlinecolor(RGB(r, g, b));
+            line(0, y, width, y);
+            if (y + 1 < height)
+            {
+                line(0, y + 1, width, y + 1); // å¡«å……ä¸‹ä¸€è¡Œï¼Œæé«˜æ€§èƒ½
+            }
         }
 
-        setlinecolor(RGB(r, g, b));
-        line(0, y, width, y);
-        if (y + 1 < height)
+        // ç»˜åˆ¶è¿œæ™¯æ˜Ÿç¾¤ - å°è€Œå¯†é›†çš„æ˜Ÿç‚¹ï¼Œä¸é—ªçƒ
+        for (int i = 0; i < 300; i++)
         {
-            line(0, y + 1, width, y + 1); // Ìî³äÏÂÒ»ĞĞ£¬Ìá¸ßĞÔÄÜ
+            int x = (i * 29) % width;
+            int y = (i * 37) % height;
+            int brightness = 50 + (rand() % 50);
+
+            putpixel(x, y, RGB(brightness, brightness, brightness));
         }
-    }
 
-    // »æÖÆÔ¶¾°ĞÇÈº - Ğ¡¶øÃÜ¼¯µÄĞÇµã£¬²»ÉÁË¸
-    for (int i = 0; i < 300; i++)
-    {
-        int x = (i * 29) % width;
-        int y = (i * 37) % height;
-        int brightness = 50 + (rand() % 50);
-
-        putpixel(x, y, RGB(brightness, brightness, brightness));
-    }
-
-    // »æÖÆÉÁË¸µÄĞÇĞÇ
-    for (int i = 0; i < RESULT_STAR_COUNT; i++)
-    {
-        // ¼ÆËãÉÁË¸Òò×Ó£ºÕıÏÒ²¨ĞÎÊ½
-        float twinkleFactor = sin(resultAnimationTime * resultStars[i].twinkleSpeed + resultStars[i].twinklePhase);
-
-        // ½«ÉÁË¸Òò×Ó×ª»»ÎªÁÁ¶È±ä»¯£¨ÖµÔÚ-40µ½40Ö®¼ä£©
-        int brightnessChange = (int)(twinkleFactor * 40.0f);
-
-        // ¼ÆËãµ±Ç°ÁÁ¶È
-        int currentBrightness = resultStars[i].baseBrightness + brightnessChange;
-        if (currentBrightness < 100) currentBrightness = 100;
-        if (currentBrightness > 255) currentBrightness = 255;
-
-        // »ñÈ¡»ù´¡ÑÕÉ«µÄRGBÖµ
-        int r = GetRValue(resultStars[i].color);
-        int g = GetGValue(resultStars[i].color);
-        int b = GetBValue(resultStars[i].color);
-
-        // ¸ù¾İµ±Ç°ÁÁ¶Èµ÷ÕûÑÕÉ«
-        float brightnessFactor = (float)currentBrightness / 255.0f;
-        r = (int)(r * brightnessFactor);
-        g = (int)(g * brightnessFactor);
-        b = (int)(b * brightnessFactor);
-
-        // »æÖÆĞÇĞÇ
-        setfillcolor(RGB(r, g, b));
-
-        // ´óĞÇĞÇÓĞ¹âÔÎĞ§¹û
-        if (resultStars[i].size >= 2)
+        // ç»˜åˆ¶é—ªçƒçš„æ˜Ÿæ˜Ÿ
+        for (int i = 0; i < RESULT_STAR_COUNT; i++)
         {
-            // ÏÈ»­Ò»¸öÉÔµ­µÄ´óÔ²×÷Îª¹âÔÎ
-            setfillcolor(RGB(r / 3, g / 3, b / 3));
-            solidcircle(resultStars[i].x, resultStars[i].y, resultStars[i].size + 1);
+            // è®¡ç®—é—ªçƒå› å­ï¼šæ­£å¼¦æ³¢å½¢å¼
+            float twinkleFactor = sin(resultAnimationTime * resultStars[i].twinkleSpeed + resultStars[i].twinklePhase);
 
-            // ÔÙ»­ÊµĞÄÔ²×÷ÎªĞÇĞÇÖ÷Ìå
+            // å°†é—ªçƒå› å­è½¬æ¢ä¸ºäº®åº¦å˜åŒ–ï¼ˆå€¼åœ¨-40åˆ°40ä¹‹é—´ï¼‰
+            int brightnessChange = (int)(twinkleFactor * 40.0f);
+
+            // è®¡ç®—å½“å‰äº®åº¦
+            int currentBrightness = resultStars[i].baseBrightness + brightnessChange;
+            if (currentBrightness < 100) currentBrightness = 100;
+            if (currentBrightness > 255) currentBrightness = 255;
+
+            // è·å–åŸºç¡€é¢œè‰²çš„RGBå€¼
+            int r = GetRValue(resultStars[i].color);
+            int g = GetGValue(resultStars[i].color);
+            int b = GetBValue(resultStars[i].color);
+
+            // æ ¹æ®å½“å‰äº®åº¦è°ƒæ•´é¢œè‰²
+            float brightnessFactor = (float)currentBrightness / 255.0f;
+            r = (int)(r * brightnessFactor);
+            g = (int)(g * brightnessFactor);
+            b = (int)(b * brightnessFactor);
+
+            // ç»˜åˆ¶æ˜Ÿæ˜Ÿ
             setfillcolor(RGB(r, g, b));
-        }
 
-        solidcircle(resultStars[i].x, resultStars[i].y, resultStars[i].size);
+            // å¤§æ˜Ÿæ˜Ÿæœ‰å…‰æ™•æ•ˆæœ
+            if (resultStars[i].size >= 2)
+            {
+                // å…ˆç”»ä¸€ä¸ªç¨æ·¡çš„å¤§åœ†ä½œä¸ºå…‰æ™•
+                setfillcolor(RGB(r / 3, g / 3, b / 3));
+                solidcircle(resultStars[i].x, resultStars[i].y, resultStars[i].size + 1);
+
+                // å†ç”»å®å¿ƒåœ†ä½œä¸ºæ˜Ÿæ˜Ÿä¸»ä½“
+                setfillcolor(RGB(r, g, b));
+            }
+
+            solidcircle(resultStars[i].x, resultStars[i].y, resultStars[i].size);
+        }
     }
 
-    // »æÖÆUIÔªËØ - Ö±½Ó»æÖÆ½¥±äÎÄ±¾¶ø²»Ê¹ÓÃGUI_Label
-    
-    // ÏÔÊ¾"YOU WIN!"ÎÄ±¾£¨´ø½¥±äĞ§¹û£©
+    // ç»˜åˆ¶UIå…ƒç´  - ç›´æ¥ç»˜åˆ¶æ¸å˜æ–‡æœ¬è€Œä¸ä½¿ç”¨GUI_Label
+
+    // æ˜¾ç¤º"YOU WIN!"æ–‡æœ¬ï¼ˆå¸¦æ¸å˜æ•ˆæœï¼‰
     const char* winText = "YOU WIN!";
     LOGFONT font;
-    MyGetTextStyle(&font);           // Ê¹ÓÃ×Ô¶¨Òåº¯Êı´úÌægettextstyle
-    font.lfHeight = 64;              // Ôö´ó×ÖÌå¸ß¶È
-    font.lfWeight = FW_EXTRABOLD;    // ÉèÖÃÎªÌØ´ÖÌå(Extra Bold)
-    
-    // ĞŞ¸´strncpy¾¯¸æ£¬Ê¹ÓÃmemcpy
-    memcpy(font.lfFaceName, "ºÚÌå", sizeof(TCHAR) * 2);
-    font.lfFaceName[2] = '\0';       // È·±£ÒÔ¿Õ×Ö·û½áÎ²
-    
-    MySetTextStyle(&font);           // Ê¹ÓÃ×Ô¶¨Òåº¯Êı´úÌæsettextstyle
-    setbkmode(TRANSPARENT);          // ÉèÖÃ±³¾°Í¸Ã÷
-    
-    // Ê¹ÓÃ±ê×¼×Ö·û´®¼ÆËã¿í¶È
+    MyGetTextStyle(&font);           // ä½¿ç”¨è‡ªå®šä¹‰å‡½æ•°ä»£æ›¿gettextstyle
+    font.lfHeight = 64;              // å¢å¤§å­—ä½“é«˜åº¦
+    font.lfWeight = FW_EXTRABOLD;    // è®¾ç½®ä¸ºç‰¹ç²—ä½“(Extra Bold)
+
+    // ä¿®å¤strncpyè­¦å‘Šï¼Œä½¿ç”¨memcpy
+    memcpy(font.lfFaceName, "åæ–‡è¡Œæ¥·", sizeof(TCHAR) * 4);
+    font.lfFaceName[4] = '\0';       // ç¡®ä¿ä»¥ç©ºå­—ç¬¦ç»“å°¾
+
+    MySetTextStyle(&font);           // ä½¿ç”¨è‡ªå®šä¹‰å‡½æ•°ä»£æ›¿settextstyle
+    setbkmode(TRANSPARENT);          // è®¾ç½®èƒŒæ™¯é€æ˜
+
+    // ä½¿ç”¨æ ‡å‡†å­—ç¬¦ä¸²è®¡ç®—å®½åº¦
     std::string winTextStr(winText);
     int winTextLen = static_cast<int>(winTextStr.length());
-    
-    // ÊÖ¶¯¼ÆËãÎÄ±¾¿í¶È¶ø²»Ê¹ÓÃtextwidth - ¿¼ÂÇµ½×ÖÌå¼Ó´óºÍ¼Ó´Ö
+
+    // æ‰‹åŠ¨è®¡ç®—æ–‡æœ¬å®½åº¦è€Œä¸ä½¿ç”¨textwidth - è€ƒè™‘åˆ°å­—ä½“åŠ å¤§å’ŒåŠ ç²—
     int textWidth = 0;
     for (int i = 0; i < winTextLen; i++) {
-        // Îª¼òµ¥Æğ¼û£¬ÕâÀï¼ÙÉèÃ¿¸ö×Ö·û¿í¶ÈÎª32ÏñËØ
-        // Êµ¼ÊÓ¦ÓÃÖĞ¿ÉÄÜĞèÒª¸ü¾«È·µÄ¼ÆËã·½·¨
+        // ä¸ºç®€å•èµ·è§ï¼Œè¿™é‡Œå‡è®¾æ¯ä¸ªå­—ç¬¦å®½åº¦ä¸º32åƒç´ 
+        // å®é™…åº”ç”¨ä¸­å¯èƒ½éœ€è¦æ›´ç²¾ç¡®çš„è®¡ç®—æ–¹æ³•
         textWidth += 32;
     }
-    
+
     int textX = sApp->width() / 2 - textWidth / 2;
-    int textY = sApp->height() / 2 - 60; // ÉÔÎ¢ÉÏÒÆ£¬ÒÔÊÊÓ¦¸ü´óµÄ×ÖÌå
-    
-    // ¼ÆËã»ùÓÚÊ±¼äµÄ½¥±ä²ÎÊı
-    float time = resultAnimationTime * 1.0f; // ¼Ó¿ì½¥±äËÙ¶È
-    
-    // Á½¸öÑÕÉ«Ö®¼ä½¥±ä - Ê¹ÑÕÉ«¸ü±¥ºÍÒ»Ğ©
-    int r1 = 100, g1 = 255, b1 = 100; // ¸ü±¥ºÍµÄÇ³ÂÌÉ«
-    int r2 = 100, g2 = 200, b2 = 255; // ¸ü±¥ºÍµÄÇ³À¶É«
-    
-    // ÊµÏÖÃè±ßĞ§¹û£¬ÏÈ»æÖÆºÚÉ«µ×
+    int textY = sApp->height() / 2 - 60; // ç¨å¾®ä¸Šç§»ï¼Œä»¥é€‚åº”æ›´å¤§çš„å­—ä½“
+
+    // è®¡ç®—åŸºäºæ—¶é—´çš„æ¸å˜å‚æ•°
+    float time = resultAnimationTime * 1.0f; // åŠ å¿«æ¸å˜é€Ÿåº¦
+
+    // ä¸¤ä¸ªé¢œè‰²ä¹‹é—´æ¸å˜ - ä½¿é¢œè‰²æ›´é¥±å’Œä¸€äº›
+    int r1 = 100, g1 = 255, b1 = 100; // æ›´é¥±å’Œçš„æµ…ç»¿è‰²
+    int r2 = 100, g2 = 200, b2 = 255; // æ›´é¥±å’Œçš„æµ…è“è‰²
+
+    // å®ç°æè¾¹æ•ˆæœï¼Œå…ˆç»˜åˆ¶é»‘è‰²åº•
     int currentX = textX;
     for (int i = 0; i < winTextLen; i++)
     {
-        // »æÖÆºÚÉ«µ×
+        // ç»˜åˆ¶é»‘è‰²åº•
         for (int offsetX = -1; offsetX <= 1; offsetX++) {
             for (int offsetY = -1; offsetY <= 1; offsetY++) {
                 if (offsetX != 0 || offsetY != 0) {
-                    // »æÖÆºÚÉ«Ãè±ß
+                    // ç»˜åˆ¶é»‘è‰²æè¾¹
                     MyDrawChar(currentX + offsetX, textY + offsetY, (wchar_t)winTextStr[i], RGB(0, 0, 0));
                 }
             }
         }
-        
-        // Î»ÖÃµİÔö
+
+        // ä½ç½®é€’å¢
         currentX += 32;
     }
-    
-    // ¶ÔÃ¿¸ö×Ö·û·Ö±ğ¼ÆËãÑÕÉ«ºÍÎ»ÖÃ
+
+    // å¯¹æ¯ä¸ªå­—ç¬¦åˆ†åˆ«è®¡ç®—é¢œè‰²å’Œä½ç½®
     currentX = textX;
     for (int i = 0; i < winTextLen; i++)
     {
-        // ¼ÆËãÃ¿¸ö×Ö·ûµÄÏàÎ»Æ«ÒÆ£¬´´½¨²¨ÀË½¥±äĞ§¹û
-        float phase = time + i * 0.8f; // Ôö¼ÓÏàÎ»²î£¬Ê¹²¨¶¯¸üÃ÷ÏÔ
-        
-        // Ê¹ÓÃÕıÏÒ²¨ÔÚÁ½¸öÑÕÉ«Ö®¼äÆ½»¬¹ı¶É
-        float ratio = (sin(phase) + 1.0f) * 0.5f; // ½«ÕıÏÒÖµ(-1µ½1)Ó³Éäµ½0µ½1
-        
-        // ¼ÆËãµ±Ç°×Ö·ûµÄÑÕÉ«
+        // è®¡ç®—æ¯ä¸ªå­—ç¬¦çš„ç›¸ä½åç§»ï¼Œåˆ›å»ºæ³¢æµªæ¸å˜æ•ˆæœ
+        float phase = time + i * 0.8f; // å¢åŠ ç›¸ä½å·®ï¼Œä½¿æ³¢åŠ¨æ›´æ˜æ˜¾
+
+        // ä½¿ç”¨æ­£å¼¦æ³¢åœ¨ä¸¤ä¸ªé¢œè‰²ä¹‹é—´å¹³æ»‘è¿‡æ¸¡
+        float ratio = (sin(phase) + 1.0f) * 0.5f; // å°†æ­£å¼¦å€¼(-1åˆ°1)æ˜ å°„åˆ°0åˆ°1
+
+        // è®¡ç®—å½“å‰å­—ç¬¦çš„é¢œè‰²
         int r = (int)(r1 + (r2 - r1) * ratio);
         int g = (int)(g1 + (g2 - g1) * ratio);
         int b = (int)(b1 + (b2 - b1) * ratio);
-        
-        // Ê¹ÓÃ×Ô¶¨Òåº¯Êı»æÖÆµ¥¸ö×Ö·û
+
+        // ä½¿ç”¨è‡ªå®šä¹‰å‡½æ•°ç»˜åˆ¶å•ä¸ªå­—ç¬¦
         MyDrawChar(currentX, textY, (wchar_t)winTextStr[i], RGB(r, g, b));
-        
-        // Ã¿¸ö×Ö·û¿í¶ÈÔ¼Îª32ÏñËØ (ÒòÎª×ÖÌå¼Ó´óÁË)
+
+        // æ¯ä¸ªå­—ç¬¦å®½åº¦çº¦ä¸º32åƒç´  (å› ä¸ºå­—ä½“åŠ å¤§äº†)
         currentX += 32;
     }
-    
-    // ÏÔÊ¾ÌáÊ¾ÎÄ±¾
+
+    // æ˜¾ç¤ºæç¤ºæ–‡æœ¬
     font.lfHeight = 24;
     MySetTextStyle(&font);
-    
-    const char* promptText = "µã»÷Êó±ê×ó¼ü·µ»Ø¿ªÊ¼Ò³Ãæ";
-    
-    // ±ÜÃâÊ¹ÓÃtextwidth
-    int promptWidth = 24 * strlen(promptText) / 2; // ÖĞÎÄ×Ö·ûÕ¼2×Ö½Ú£¬Ó¢ÎÄ×Ö·ûÕ¼1×Ö½Ú
-    
-    // ×ª»»Îª¿í×Ö·û´®
+
+    const char* promptText = "ç‚¹å‡»é¼ æ ‡å·¦é”®è¿”å›å¼€å§‹é¡µé¢";
+
+    // é¿å…ä½¿ç”¨textwidth
+    int promptWidth = 24 * strlen(promptText) / 2; // ä¸­æ–‡å­—ç¬¦å 2å­—èŠ‚ï¼Œè‹±æ–‡å­—ç¬¦å 1å­—èŠ‚
+
+    // è½¬æ¢ä¸ºå®½å­—ç¬¦ä¸²
     std::wstring widePrompt = AnsiToWide(promptText);
-    
-    // Ê¹ÓÃ×Ô¶¨Òåº¯Êı»æÖÆÎÄ±¾
+
+    // ä½¿ç”¨è‡ªå®šä¹‰å‡½æ•°ç»˜åˆ¶æ–‡æœ¬
     MyDrawText(
-        sApp->width() / 2 - promptWidth / 2, 
-        sApp->height() / 2 + 20, 
-        widePrompt.c_str(), 
-        RGB(200, 200, 200)
+        sApp->width() / 2 - promptWidth / 2,
+        sApp->height() / 2 + 20,
+        widePrompt.c_str(),
+        RGB(0, 255,0)
     );
-    
-    // ÏÔÊ¾°æ±¾ºÅ
+
+    // æ˜¾ç¤ºç‰ˆæœ¬å·
     font.lfHeight = 16;
     MySetTextStyle(&font);
-    
-    const char* versionText = "°æ±¾£º1.0";
-    
-    // ±ÜÃâÊ¹ÓÃtextwidth
-    int versionWidth = 16 * strlen(versionText) / 2; // ÖĞÎÄ×Ö·ûÕ¼2×Ö½Ú
-    
-    // ×ª»»Îª¿í×Ö·û´®
+
+    const char* versionText = "ç‰ˆæœ¬1.0";
+
+    // é¿å…ä½¿ç”¨textwidth
+    int versionWidth = 16 * strlen(versionText) / 2; // ä¸­æ–‡å­—ç¬¦å 2å­—èŠ‚
+
+    // è½¬æ¢ä¸ºå®½å­—ç¬¦ä¸²
     std::wstring wideVersion = AnsiToWide(versionText);
-    
-    // Ê¹ÓÃ×Ô¶¨Òåº¯Êı»æÖÆÎÄ±¾
+
+    // ä½¿ç”¨è‡ªå®šä¹‰å‡½æ•°ç»˜åˆ¶æ–‡æœ¬
     MyDrawText(
-        sApp->width() - versionWidth - 20, 
-        sApp->height() - 30, 
-        wideVersion.c_str(), 
-        RGB(150, 150, 150)
+        sApp->width() - versionWidth - 20,
+        sApp->height() - 30,
+        wideVersion.c_str(),
+        RGB(0, 255,0)
     );
 }
 
 void ResultScene::update()
 {
-    // ¼ÆËãÊ±¼äÔöÁ¿£¨Ãë£©
+    // è®¡ç®—æ—¶é—´å¢é‡ï¼ˆç§’ï¼‰
     DWORD currentTime = GetTickCount();
     float deltaTime = (currentTime - resultLastUpdateTime) / 1000.0f;
     resultLastUpdateTime = currentTime;
 
-    // ¸üĞÂ¶¯»­Ê±¼ä
+    // æ›´æ–°åŠ¨ç”»æ—¶é—´
     resultAnimationTime += deltaTime;
-    
-    // ²»ÔÙĞèÒªµ¥¶À¸üĞÂÎÄ×Ö½¥±äĞ§¹û£¬ÒòÎªÏÖÔÚÊ¹ÓÃ¶¯»­Ê±¼ä
-    
-    // ±ÜÃâµã»÷Ì«¿ìÒâÍâÌø¹ı½áËãÒ³Ãæ£¬Ê¹ÓÃ¼æÈİº¯ÊıÌæ´úGetTickCount64
+
+    // ä¸å†éœ€è¦å•ç‹¬æ›´æ–°æ–‡å­—æ¸å˜æ•ˆæœï¼Œå› ä¸ºç°åœ¨ä½¿ç”¨åŠ¨ç”»æ—¶é—´
+
+    // é¿å…ç‚¹å‡»å¤ªå¿«æ„å¤–è·³è¿‡ç»“ç®—é¡µé¢ï¼Œä½¿ç”¨å…¼å®¹å‡½æ•°æ›¿ä»£GetTickCount64
     if (MyGetTickCount64() - m_createTime < 500)
     {
         return;
     }
 
-    // ¼ì²âÊó±êµã»÷£¬µã»÷ºó·µ»Ø¿ªÊ¼Ò³Ãæ
+    // æ£€æµ‹é¼ æ ‡ç‚¹å‡»ï¼Œç‚¹å‡»åè¿”å›å¼€å§‹é¡µé¢
     if (sApp->msg()->message == WM_LBUTTONDOWN)
     {
         sApp->runScene(new StartScene());
