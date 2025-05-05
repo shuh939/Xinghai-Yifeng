@@ -101,16 +101,28 @@ void displayPersons(Person* head) {
 }
 
 Person* deletePerson(Person* head, const char* name) {
-	Person* temp = head, * prev = NULL;
-	while (temp && strcmp(temp->name, name)) {
-		prev = temp;
-		temp = temp->next;
+	if (!head || !name) return head; // 空指针检查
+
+	Person* curr = head, * prev = nullptr;
+	while (curr && strcmp(curr->name, name) != 0) {
+		prev = curr;
+		curr = curr->next;
 	}
-	if (!temp) { printf("未找到该人员信息! \n"); return head; }
-	if (prev) prev->next = temp->next;
-	else head = temp->next;
-	free(temp);
-	printf("人员信息删除成功! \n");
+
+	if (!curr) {
+		printf("未找到该人员信息!\n");
+		return head;
+	}
+
+	if (prev) {
+		prev->next = curr->next;
+	}
+	else {
+		head = curr->next;
+	}
+
+	free(curr);
+	printf("删除成功！\n");
 	return head;
 }
 
@@ -302,6 +314,7 @@ int main(int argc, char* argv[])
 				if (strcmp(input_pass, found->password) == 0) {
 					printf("登录成功，欢迎 %s 进入游戏！\n", found->name);
 					found->battleCount++;  // 比赛场次加1
+					saveToFile(head, filename);
 					// 这里可以调用游戏的主函数
 					// 初始化应用窗口（960x820）
 					Application a(960, 820);
